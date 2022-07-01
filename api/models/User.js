@@ -13,6 +13,9 @@ const UserSchema = new mongoose.Schema({
   name: {
     type: String,
   },
+  _refreshToken: {
+    type: String,
+  },
   createdAt: {
     type: Date,
     default: Date.now,

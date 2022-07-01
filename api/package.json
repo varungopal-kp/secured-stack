@@ -19,6 +19,7 @@
     "mongoose-delete": "^0.5.4",
     "morgan": "~1.9.1",
     "node-input-validator": "^4.5.0",
-    "nodemon": "^2.0.18"
+    "nodemon": "^2.0.18",
+    "winston": "^3.8.0"
   }
 }

@@ -16,4 +16,6 @@ router.post(
   authController.register
 );
 
+router.post("/renewToken", authController.renewToken);
+
 module.exports = router;

@@ -1,10 +1,8 @@
-exports.errorResponse = function (res, error, message = "Failed") {
+const logger = require("../config/logger");
+
+exports.errorResponse = function (res, message, error = false) {
   if (error) {
-    return res.status(400).send({
-      success: false,
-      error: error.toString(),
-      message,
-    });
+    logger.log("error", error.toString());
   }
   return res.status(400).send({
     success: false,
@@ -13,7 +11,7 @@ exports.errorResponse = function (res, error, message = "Failed") {
   });
 };
 
-exports.successResponse = function (res, data = {}, message = "Success") {
+exports.successResponse = function (res, message = "Success", data = {}) {
   return res.status(200).send({
     success: true,
     message,

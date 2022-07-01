@@ -1,9 +1,14 @@
 const jwt = require("jsonwebtoken");
 module.exports.isAuthorized = function (req, res, next) {
-   // return next();
+  // return next();
+  if (
+    req.path == "/login"||
+    req.path == "/register"
+  )
+    return next();
+
   try {
-    const authHeaders = req.headers["authorization"];
-    const token = authHeaders && authHeaders.split(" ")[1];
+    const token = req.cookies["_accessToken"];
 
     if (!token)
       return res.status(401).json({
@@ -12,10 +17,10 @@ module.exports.isAuthorized = function (req, res, next) {
         error: "Authentication failure!",
       });
 
-    const privateKey = process.env.JWT_KEY;
+    const privateKey = process.env.ACCESS_JWT_KEY;
     jwt.verify(token, privateKey, function (err, decoded) {
       if (err) return res.sendStatus(403);
-      req.auth = decoded;
+      req.user = decoded;
     });
     next();
   } catch (error) {
