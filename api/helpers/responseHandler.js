@@ -1,20 +1,31 @@
 const logger = require("../config/logger");
 
-exports.errorResponse = function (res, message, error = false) {
-  if (error) {
-    logger.log("error", error.toString());
+exports.errorResponse = function (res, params) {
+  const options = {
+    status: params.status || 400,
+    message: params.message || "Failed",
+    error: params.error || false,
+  };
+
+  if (options.error) {
+    logger.log("error", options.error.toString());
   }
-  return res.status(400).send({
+
+  return res.status(options.status).send({
     success: false,
-    error: message,
-    message,
+    message: options.message,
   });
 };
 
-exports.successResponse = function (res, message = "Success", data = {}) {
-  return res.status(200).send({
+exports.successResponse = function (res, params) {
+  const options = {
+    status: params.status || 200,
+    message: params.message || "Success",
+    data: params.data || {},
+  };
+  return res.status(options.status).send({
     success: true,
-    message,
-    data,
+    message: options.message,
+    data: options.data,
   });
 };

@@ -5,7 +5,7 @@ import { GET_USER_REQUEST } from "../constants/user";
 
 function* userCall({ payload }) {
   try {
-    const login = yield axios
+    const users = yield axios
       .get(`users/getAll`, payload)
       .then((res) => {
         return res;
@@ -13,7 +13,7 @@ function* userCall({ payload }) {
       .catch(function (response) {
         return Promise.reject(response);
       });
-    yield put(getUsersSuccess(login));
+    yield put(getUsersSuccess(users));
   } catch (error) {
     yield put(getUsersError(error));
   }

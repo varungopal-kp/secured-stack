@@ -1,13 +1,11 @@
 import * as type from "../constants/auth";
 
-const _token = localStorage.getItem("_token") || false;
-const user = localStorage.getItem("user") || false;
+const isAuthorised = localStorage.getItem("isAuthorised") || false;
 
 const initialState = {
-  auth: { otp: "", userId: user },
+  isAuthorised: isAuthorised,
   loading: false,
   error: null,
-  _token: _token,
 };
 
 export default function auth(state = initialState, action) {
@@ -16,11 +14,12 @@ export default function auth(state = initialState, action) {
       return {
         ...state,
         loading: true,
+        isAuthorised: false,
       };
     case type.LOGIN_SUCCESS:
       return {
         ...state,
-        auth: action.payload.data,
+        isAuthorised: true,
         loading: false,
       };
     case type.LOGIN_FAILED:
@@ -34,20 +33,19 @@ export default function auth(state = initialState, action) {
       return {
         ...state,
         loading: true,
-        _token: false,
+        isAuthorised: false,
       };
     case type.REGISTER_SUCCESS:
       return {
         ...state,
         loading: false,
-        _token: action.payload.data.token,
+        isAuthorised: true,
       };
     case type.REGISTER_FAILED:
       return {
         ...state,
         loading: false,
         error: action.payload,
-        _token: false,
       };
     default:
       return state;

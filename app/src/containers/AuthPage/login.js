@@ -63,7 +63,7 @@ export default function Login(props) {
 
                       <div className="col-md-6 offset-md-4 auth-btns">
                         <div>
-                          <button type="submit" className="btn btn-primary">
+                          <button type="submit" className="btn btn-primary" disabled={props.loading}>
                             Login
                           </button>
                         </div>

@@ -3,10 +3,13 @@ const {
   errorResponse,
   successResponse,
 } = require("../helpers/responseHandler");
-const { generateTokens, renewTokens } = require("../helpers/tokenHandler");
-
+const {
+  generateTokens,
+  renewTokens,
+  verifyRefreshToken,
+} = require("../helpers/tokenHandler");
+const config = require("../config/config.json");
 const bcrypt = require("bcrypt");
-const SALT = 10;
 
 exports.login = async (req, res, next) => {
   let params = req.body;
@@ -15,12 +18,12 @@ exports.login = async (req, res, next) => {
     const user = await User.findOne({ email: params.email });
 
     if (!user) {
-      return errorResponse(res, "Wrong credentials");
+      return errorResponse(res, { message: "Wrong credentials" });
     }
 
     const passwordCheck = bcrypt.compareSync(params.password, user.password);
     if (!passwordCheck) {
-      return errorResponse(res, "Wrong credentials");
+      return errorResponse(res, { message: "Wrong credentials" });
     }
     const _tokens = generateTokens(user._id);
 
@@ -35,9 +38,12 @@ exports.login = async (req, res, next) => {
       httpOnly: true,
     });
 
-    return successResponse(res, "Login Successful", { _tokens });
+    return successResponse(res, {
+      message: "Login Successful",
+      data: { _tokens },
+    });
   } catch (error) {
-    return errorResponse(res, "Login Failed", error);
+    return errorResponse(res, { message: "Login Failed", error });
   }
 };
 
@@ -46,9 +52,9 @@ exports.register = async (req, res, next) => {
   try {
     const userExist = await User.findOne({ email: params.email });
     if (userExist) {
-      return errorResponse(res, "User already exist");
+      return errorResponse(res, { message: "User already exist" });
     }
-    params.password = bcrypt.hashSync(params.password, SALT);
+    params.password = bcrypt.hashSync(params.password, config.jwt_salt);
     const user = await User.create(params);
 
     const _tokens = generateTokens(user._id);
@@ -64,20 +70,27 @@ exports.register = async (req, res, next) => {
       httpOnly: true,
     });
 
-    return successResponse(res, "Register Successful", userData);
+    return successResponse(res, {
+      message: "Register Successful",
+      data: userData,
+    });
   } catch (error) {
-    return errorResponse(res, "Register Failed", error);
+    return errorResponse(res, { message: "Register Failed", error });
   }
 };
 
 exports.renewToken = async (req, res, next) => {
   try {
-    const userId = req.user.userId;
     const _refreshToken = req.cookies["_refreshToken"];
-    const user = await User.findOne({ _id: userId });
+    const userId = verifyRefreshToken(_refreshToken);
+    
+    if (!_refreshToken) {
+      return errorResponse(res, { message: "Renew Token Missing" });
+    }
 
+    const user = await User.findOne({ _id: userId.userId });
     if (!user) {
-      return errorResponse(res, "User does not exist");
+      return errorResponse(res, { message: "User does not exist" });
     }
 
     if (user._refreshToken != _refreshToken) {
@@ -87,16 +100,22 @@ exports.renewToken = async (req, res, next) => {
       user._refreshToken = "";
       user.save();
 
-      return errorResponse(res, "Malicious token found");
+      return errorResponse(res, { message: "Malicious token found" });
     }
 
     const _tokens = renewTokens(_refreshToken);
 
     user._refreshToken = _tokens.refreshToken;
     user.save();
-
-    return successResponse(res, "Renew Token Successful", _tokens);
+    res.cookie("_accessToken", _tokens.accessToken, { httpOnly: true });
+    res.cookie("_refreshToken", _tokens.refreshToken, {
+      httpOnly: true,
+    });
+    return successResponse(res, {
+      message: "Renew Token Successful",
+      data: _tokens,
+    });
   } catch (error) {
-    return errorResponse(res, "Renew Token Failed", error);
+    return errorResponse(res, { message: "Renew Token Failed", error });
   }
 };
