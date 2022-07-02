@@ -1,5 +1,5 @@
 {
   "jwt_salt": 10,
-  "access_token_exp": "10s",
+  "access_token_exp": "10m",
   "refresh_token_exp": "7d"
 }

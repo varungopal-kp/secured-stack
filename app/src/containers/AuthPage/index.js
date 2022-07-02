@@ -1,14 +1,12 @@
 import React, { useState, useEffect } from "react";
-import { useDispatch, connect } from "react-redux";
+import { connect } from "react-redux";
 import { login, register } from "../../redux/actions/auth";
 import { NotificationManager } from "react-notifications";
 import LoginPage from "./login";
 import RegisterPage from "./register";
 
-
 export function Index(props) {
   const [page, setPage] = useState("loginPage");
-  const dispatch = useDispatch();
 
   useEffect(() => {
     if (props.auth.isAuthorised === true) {
@@ -24,11 +22,11 @@ export function Index(props) {
   }, [props.auth.error]);
 
   const handleLogin = (inputs) => {
-    dispatch(login(inputs));
+    props.dispatch(login(inputs));
   };
 
   const handleRegister = (inputs) => {
-    dispatch(register(inputs));
+    props.dispatch(register(inputs));
   };
 
   const handlePage = (page) => {

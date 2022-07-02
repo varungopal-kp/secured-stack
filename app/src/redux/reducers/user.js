@@ -4,6 +4,7 @@ const initialState = {
   users: [],
   loading: false,
   error: null,
+  success: false,
 };
 
 export default function user(state = initialState, action) {
@@ -20,7 +21,7 @@ export default function user(state = initialState, action) {
         users: action.payload.data.data,
         loading: false,
       };
-    case type.GET_USER_FAILED:
+    case type.GET_USER_FAILED:      
       return {
         ...state,
         loading: false,

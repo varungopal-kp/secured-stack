@@ -82,11 +82,12 @@ exports.register = async (req, res, next) => {
 exports.renewToken = async (req, res, next) => {
   try {
     const _refreshToken = req.cookies["_refreshToken"];
-    const userId = verifyRefreshToken(_refreshToken);
-    
+
     if (!_refreshToken) {
       return errorResponse(res, { message: "Renew Token Missing" });
     }
+
+    const userId = verifyRefreshToken(_refreshToken);
 
     const user = await User.findOne({ _id: userId.userId });
     if (!user) {
@@ -99,7 +100,6 @@ exports.renewToken = async (req, res, next) => {
 
       user._refreshToken = "";
       user.save();
-
       return errorResponse(res, { message: "Malicious token found" });
     }
 
@@ -118,4 +118,13 @@ exports.renewToken = async (req, res, next) => {
   } catch (error) {
     return errorResponse(res, { message: "Renew Token Failed", error });
   }
+};
+
+exports.logout = async (req, res, next) => {
+  res.clearCookie("_accessToken");
+  res.clearCookie("_refreshToken");
+
+  return successResponse(res, {
+    message: "Logout Successful",
+  });
 };

@@ -18,4 +18,6 @@ router.post(
 
 router.post("/renewToken", authController.renewToken);
 
+router.post("/logout", authController.logout);
+
 module.exports = router;

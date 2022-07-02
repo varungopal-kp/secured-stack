@@ -1,11 +1,12 @@
 import * as type from "../constants/auth";
 
-const isAuthorised = localStorage.getItem("isAuthorised") || null;
+const isAuthorised = localStorage.getItem("isAuthorised") || "";
 
 const initialState = {
   isAuthorised: isAuthorised,
   loading: false,
   error: null,
+  logout: false,
 };
 
 export default function auth(state = initialState, action) {

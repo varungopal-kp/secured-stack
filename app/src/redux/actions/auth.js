@@ -37,3 +37,21 @@ export function registerError(data) {
     payload: data,
   };
 }
+
+export function logout() {
+  return {
+    type: type.LOGOUT_REQUEST,
+  };
+}
+export function logoutSuccess(data) {
+  return {
+    type: type.LOGOUT_SUCCESS,
+    payload: data,
+  };
+}
+export function logoutError(data) {
+  return {
+    type: type.LOGOUT_FAILED,
+    payload: data,
+  };
+}

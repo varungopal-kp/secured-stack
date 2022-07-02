@@ -38,11 +38,11 @@ instance.interceptors.response.use(
                 return token; // resolve with the new token
               })
               .catch((error) => {
-                localStorage.setItem("isAuthorised", null);
+                localStorage.setItem("isAuthorised", "");
                 return  window.location = "/auth";
               });
           } catch (error) {
-            localStorage.setItem("isAuthorised", null);
+            localStorage.setItem("isAuthorised", "");
             return window.location = "/auth";
           }
         }

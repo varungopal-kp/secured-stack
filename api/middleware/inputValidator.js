@@ -20,8 +20,7 @@ exports.validate = function (attributes) {
           message: "Input validation failed",
         });
       }
-      req.body = sanitize(req.body);
-      console.log(req.body)
+      req.body = sanitize(req.body);      
       next();
     } catch (error) {
       logger.log("error", error.toString());
