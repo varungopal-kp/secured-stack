@@ -1,6 +1,6 @@
 import * as type from "../constants/auth";
 
-const isAuthorised = localStorage.getItem("isAuthorised") || false;
+const isAuthorised = localStorage.getItem("isAuthorised") || null;
 
 const initialState = {
   isAuthorised: isAuthorised,

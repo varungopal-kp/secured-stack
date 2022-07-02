@@ -1,4 +1,5 @@
 const logger = require("../config/logger");
+const sanitize = require("mongo-sanitize");
 
 const niv = require("node-input-validator");
 
@@ -19,6 +20,8 @@ exports.validate = function (attributes) {
           message: "Input validation failed",
         });
       }
+      req.body = sanitize(req.body);
+      console.log(req.body)
       next();
     } catch (error) {
       logger.log("error", error.toString());

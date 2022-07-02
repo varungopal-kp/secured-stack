@@ -4,14 +4,14 @@ import { login, register } from "../../redux/actions/auth";
 import { NotificationManager } from "react-notifications";
 import LoginPage from "./login";
 import RegisterPage from "./register";
-require("./style.css");
+
 
 export function Index(props) {
   const [page, setPage] = useState("loginPage");
   const dispatch = useDispatch();
 
   useEffect(() => {
-    if (props.auth.isAuthorised) {
+    if (props.auth.isAuthorised === true) {
       localStorage.setItem("isAuthorised", true);
       window.location = "/";
     }
@@ -19,7 +19,7 @@ export function Index(props) {
 
   useEffect(() => {
     if (props.auth.error) {
-      NotificationManager.error(props.auth.error.message);      
+      NotificationManager.error(props.auth.error.message);
     }
   }, [props.auth.error]);
 
@@ -36,10 +36,20 @@ export function Index(props) {
   };
 
   if (page == "loginPage") {
-    return <LoginPage handlePage={handlePage} handleLogin={handleLogin} loading={props.auth.loading}/>;
+    return (
+      <LoginPage
+        handlePage={handlePage}
+        handleLogin={handleLogin}
+        loading={props.auth.loading}
+      />
+    );
   } else {
     return (
-      <RegisterPage handlePage={handlePage} handleRegister={handleRegister} loading={props.auth.loading}/>
+      <RegisterPage
+        handlePage={handlePage}
+        handleRegister={handleRegister}
+        loading={props.auth.loading}
+      />
     );
   }
 }

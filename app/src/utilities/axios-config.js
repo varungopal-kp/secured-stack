@@ -1,13 +1,20 @@
 import axios from "axios";
 
-const token = localStorage.getItem("_token") || "";
-
 const baseURL = "http://localhost:8000/api/";
 
 const instance = axios.create({
   baseURL: baseURL,
   withCredentials: true,
 });
+
+let getNewTokenPromise;
+
+const getNewTokens = () =>
+  instance
+    .post("auth/renewToken", {
+      withCredentials: true,
+    })
+    .then((e) => e);
 
 instance.interceptors.response.use(
   function (response) {
@@ -23,8 +30,25 @@ instance.interceptors.response.use(
         }
       }
       if (error.response.status == 401 || error.response.status == 403) {
-        const renewToken =await instance.post("auth/renewToken");
-        console.log(renewToken)
+        if (!getNewTokenPromise) {
+          try {
+            getNewTokenPromise = getNewTokens()
+              .then((token) => {
+                getNewTokenPromise = null; // clear state
+                return token; // resolve with the new token
+              })
+              .catch((error) => {
+                localStorage.setItem("isAuthorised", null);
+                return  window.location = "/auth";
+              });
+          } catch (error) {
+            localStorage.setItem("isAuthorised", null);
+            return window.location = "/auth";
+          }
+        }
+        return getNewTokenPromise.then((token) => {
+          return axios(error.config);
+        });
       }
     }
     return Promise.reject({ message: errorMsg });

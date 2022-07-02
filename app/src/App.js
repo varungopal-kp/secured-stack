@@ -1,7 +1,9 @@
+
 import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
+import "./App.css";
 import AuthPage from "./containers/AuthPage";
 import HomePage from "./containers/HomePage";
-import "./App.css";
+
 import "react-notifications/lib/notifications.css";
 import { PrivateRoute } from "./hoc/PrivateRoute";
 import { NotificationContainer } from "react-notifications";
