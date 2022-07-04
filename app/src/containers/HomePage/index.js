@@ -7,6 +7,8 @@ export function Index(props) {
   const handeGetUsers = () => {
     props.dispatch(getUsers());
   };
+  
+  const userList = JSON.stringify(props.users);
   return (
     <div className="card-body">
       <div className="col">
@@ -20,6 +22,9 @@ export function Index(props) {
               Get Users
             </button>
           </div>
+        </div>
+        <div className="row">
+          <div className="col-12">Users : {userList}</div>
         </div>
       </div>
     </div>

@@ -6,7 +6,7 @@ const {
 
 exports.getAll = async (req, res, next) => {
   try {
-    const users = await User.find();
+    const users = await User.find().select("-password");
     return successResponse(res, {
       message: "Users Get Successful",
       data: users,
