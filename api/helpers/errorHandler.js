@@ -1,10 +1,15 @@
 const logger = require("../config/logger");
 
-exports.createError = function (message, error = false) {
-  const msg = message;
-  if (error) {
-    msg = error.toString();
+exports.createError = function (message, error = {}) {
+  let errorMessage = message;
+  if (error && error.stack && error.message) {
+    exports.errorLog(error);
+  } else if (error && error.errorMessage) {
+    errorMessage = error.errorMessage;
   }
-  logger.log("error", msg);
-  return new Error(message);
+
+  throw { errorMessage };
+};
+exports.errorLog = function (error) {
+  return logger.log("error", error.toString());
 };

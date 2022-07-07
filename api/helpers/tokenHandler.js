@@ -9,28 +9,28 @@ const accessOptions = { expiresIn: config.access_token_exp };
 const refreshOptions = { expiresIn: config.refresh_token_exp };
 
 module.exports.generateTokens = (userId) => {
-  try {
+  try {   
     const accessToken = jwt.sign({ userId }, ACCESS_JWT_KEY, accessOptions);
     const refreshToken = jwt.sign({ userId }, REFRESH_JWT_KEY, refreshOptions);
-    
+
     return { accessToken, refreshToken };
   } catch (error) {
-    throw createError("Authorization Failed", error);
+    return createError("Authorization Failed", error);
   }
 };
 module.exports.renewTokens = (_refreshToken) => {
   try {
+   
     const user = jwt.verify(_refreshToken, REFRESH_JWT_KEY);
-    
+
     if (!user) {
-      throw createError("Unauthorized");
+      return createError("Unauthorized");
     }
 
     const tokens = module.exports.generateTokens(user.userId);
     return tokens;
-
   } catch (error) {
-    throw createError("Unauthorized", error);
+    return createError("Unauthorized", error);
   }
 };
 
@@ -39,11 +39,12 @@ module.exports.verifyRefreshToken = (_refreshToken) => {
     const user = jwt.verify(_refreshToken, REFRESH_JWT_KEY);
 
     if (!user) {
-      throw createError("Unauthorized");
+      return createError("Unauthorized");
     }
 
     return user;
-  } catch (error) {    
-    throw createError("Unauthorized", error);
+  } catch (error) {
+    return createError("Unauthorized", error);
   }
 };
+
